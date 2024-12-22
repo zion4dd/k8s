@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy  # имя деплоя
+  labels:
+    app: my-nginx-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: nginx
+  template:  # настройки пода
+    metadata:
+      labels:
+        project: nginx
+    spec:
+      containers:
+        - name: nginx-cont
+          image: nginx
+          ports:
+            - containerPort: 6480
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-autoscale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2betalvl
+    kind: Deployment
+    name: nginx-deploy  # имя деплоя сверху
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
+

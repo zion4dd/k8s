@@ -1,0 +1,58 @@
+# Google Cloud SDK | Amazon EKS
+
+# Управление VM c K8s Cluster
+minikube version
+minikube start			# создать и Запустить
+minikube start --cpus=4 --memory=8gb --disk-size=5gb -p MYCLUSTERNAME
+minikube stop
+minikube delete
+minikube ssh			# Логин
+minikube dashboard
+minikube service hello [--url]
+
+# инфа кластера
+kubectl version			# Версия kubectl клиента и сервера
+kubectl cluster-info		# Информация о K8s Cluster'e
+kubectl get nodes		# Все Серверы K8s Cluster'a
+kubectl get componentstatuses	# Состояние K8s Cluster'a
+
+# запустить и удалить
+kubectl create deployment hello --image=registry.k8s.io/echoserver:1.10
+kubectl expose deployment hello --type=NodePort --port=8080
+kubectl delete services hello
+kubectl delete deployment hello [--all]
+OR
+kubectl apply -f redis.yaml
+kubectl delete -f redis.yaml
+
+# инфа сущностей
+kubectl get pods
+kubectl get deploy
+kubectl get services
+kubectl describe pods hello
+kubectl describe deployment hello
+
+# kubectl port-forward <pod-name> 8888:80
+# kubectl exec -it <pod-name> -- bash
+
+# масштабирование
+kubectl scale deployment hello --replicas 3
+kubectl get rs			# replicas set - реплики объединяются в сет
+kubectl autoscale deployment hello --min=4 --max=6 --cpu-percent=80
+kubectl get hpa			# horizontal pod autoscaler - создается объект hpa
+
+# накатить новый image в deployment
+kubectl set image deployment/hello myhttpd=registry.k8s.io/echoserver:1.10 --record # myhttpd имя контейнера
+kubectl apply -f redis.yaml			# обновить image в манифесте
+kubectl rollout restart deployment/hello	# обновить image с тем же именем imagePullPolicy: Always !!!
+
+# откат
+kubectl rollout history deployment/hello		# история обновлений
+kubectl rollout status deployment/hello			# статус обновлений
+kubectl rollout undo deployment/hello			# откатить на предыдущую версию
+kubectl rollout undo deployment/hello --to-revision=4	# номер из history
+
+# обновить образ на хабе
+docker build -t zion4d/minizi:latest .
+docker push zion4d/minizi:latest
+

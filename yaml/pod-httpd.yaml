@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myhttpd
+  labels:
+    env: dev
+    app: main
+spec:
+  containers:
+    - name: httpd-container
+      image: httpd:latest
+      ports:
+        - containerPort: 80
+        
+#    - name: nginx-container
+#      image: nginx:latest
+
+
+# kubectl apply -f httpd.yaml
+# kubectl get pods
+# kubectl describe pods myhttpd
+# kubectl port-forward myhttpd 8888:80
+# kubectl exec -it myhttpd -- bash
+# kubectl delete pods myhttpd
+# kubectl delete -f httpd.yaml
+
