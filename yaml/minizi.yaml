@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minizi
+  name: minizi-deploy
 spec:
   replicas: 2
   selector:
@@ -10,12 +10,45 @@ spec:
   template:
     metadata:
       labels:
-        app: minizi
+        app: minizi  # service will look for PODS labels =>
     spec:
       containers:
-      - name: minizi
-        image: zion4d/minizi:version2
+      - name: minizi-container
+        image: zion4d/minizi:latest
         imagePullPolicy: Always
         ports:
-          - containerPort: 8000
+        - containerPort: 8000
+        env:
+        - name: FOR_GODS_SAKE_PLEASE_REDEPLOY
+          value: 'THIS_STRING_IS_REPLACED_DURING_BUILD'
+        # best practice: 1 container / 1 pod
+#     - name: nginx-container # one more container
+#       image: nginx:latest
+#       ports:
+#       - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minizi-service
+  labels:
+    app: minizi
+spec:
+  type: NodePort # LoadBalancer
+  selector:
+    app: minizi  # selecting PODS with labels <=
+  ports:
+  - name: app-listener
+    protocol: TCP
+    port: 81
+    # ^^ external only if LoadBalancer. if NodePort it is service port inside the cluster - use port-forward
+    targetPort: 8000 # port on pod
+    nodePort: 30000 # if NodePort force assign external port
+# - name: nginx-listener
+#   protocol: TCP
+#   port: 81
+#   targetPort: 8080
+
+# kubectl get svc
 

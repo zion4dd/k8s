@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deploy  # имя деплоя
+  name: nginx-deploy # имя деплоя
   labels:
     app: my-nginx-app
 spec:
-  replicas: 3
+  replicas: 3 # не нужно указывать если autoscaler
   selector:
     matchLabels:
       project: nginx
-  template:  # настройки пода
+  template: # настройки пода
     metadata:
       labels:
         project: nginx
     spec:
       containers:
-        - name: nginx-cont
-          image: nginx
-          ports:
-            - containerPort: 6480
+      - name: nginx-cont
+        image: nginx
+        ports:
+        - containerPort: 6480
 
 ---
 apiVersion: autoscaling/v2beta1
@@ -29,7 +29,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v2betalvl
     kind: Deployment
-    name: nginx-deploy  # имя деплоя сверху
+    name: nginx-deploy # имя деплоя сверху
   minReplicas: 2
   maxReplicas: 3
   metrics:

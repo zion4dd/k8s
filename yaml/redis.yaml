@@ -10,19 +10,19 @@ spec:
   template:
     metadata:
       labels:
-        app: redis
+        app: redis # =>
     spec:
       containers:
       - name: redis
         image: redis:alpine
         command: ["redis-server", "--appendonly", "yes", "--port", "6480"]
         volumeMounts:
-          - name: redis-data
-            mountPath: /data
-      volumes:
         - name: redis-data
-          hostPath:
-            path: /redis
+          mountPath: /data
+      volumes:
+      - name: redis-data
+        hostPath:
+          path: /redis
 ---
 apiVersion: v1
 kind: Service
@@ -30,6 +30,7 @@ metadata:
   name: redis
 spec:
   ports:
-    - port: 6480
+  - port: 6480
   selector:
-    app: redis
+    app: redis  # <=
+

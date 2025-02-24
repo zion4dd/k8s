@@ -11,9 +11,8 @@ spec:
       image: httpd:latest
       ports:
         - containerPort: 80
-        
-#    - name: nginx-container
-#      image: nginx:latest
+#   - name: nginx-container
+#     image: nginx:latest
 
 
 # kubectl apply -f httpd.yaml
